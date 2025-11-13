@@ -6,7 +6,7 @@ This project is my submission for the front-end development task at MD Strategis
 
 You can view the live project here:
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://alirezakmaxim.github.io/md-strategist-agency/)
+[[![Live Demo]](https://alirezakmaxim.github.io/md-strategist-landing-page/)
 
 > **Note:** Replace the link above with your actual GitHub Pages link.
 
