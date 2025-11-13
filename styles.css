@@ -36,7 +36,7 @@
 .parent.grid-ready {
   opacity: 1;
 }
-
+  
     /* Main-Grid */
     .parent {
       display: grid;
@@ -270,7 +270,7 @@
       }
 
       .div2 span {
-        font-size: 20px;
+        font-size: 24px;
       }
 
       .div3 span {
@@ -334,3 +334,60 @@
   }
     }
 
+/* آیکون دایره‌ای کنار پیام دسترسی دوربین */
+.msg-icon-circle {
+width: 80px;
+    height: 80px;
+    min-width: 42px;
+    border-radius: 50%;
+    background: linear-gradient(82.94deg, rgb(8, 34, 35) 3.66%, rgb(29, 70, 65) 96.34%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: 8px;
+    font-size: 22px;
+    border: 2px solid #ba9258;
+
+}
+/* وقتی دوربین فعال شد، انیمیشن سلول وسط قطع شود */
+.pulsate-cell.camera-on {
+  animation: none !important;
+}
+.msg-icon-circle {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background:#173c38;  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: 8px;
+  border: 2px solid #ba9258;
+
+}
+
+.msg-icon-img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  display: block;
+}
+@media (max-width: 768px) {
+  .msg-icon-circle {
+    display: none !important;
+    
+  }
+
+  
+  #customMessageBox > button {
+  padding: 0 20px;
+  height: 45px;
+  font-size: 14px;
+  white-space: nowrap;   /* جلوگیری از 2 خطی شدن */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    width: 80px !important;
+}
+
+}

@@ -177,325 +177,374 @@
 
 
 
+// Camera API 
 
 
 
 
-  
-    document.addEventListener('DOMContentLoaded', () => {
-      let hasClickedAllow = false;
-      let videoElement = null;
-      let stream = null;
-      let lastHash = window.location.hash;
 
-      const isMobile = () => window.innerWidth <= 768;
+  document.addEventListener('DOMContentLoaded', () => {
+    let hasClickedAllow = false;
+    let videoElement = null;
+    let stream = null;
+    let lastHash = window.location.hash;
 
-      // ✅ اگر #header وجود نداشت، داینامیک بسازش (بدون دست زدن به استایل‌های تو)
-      const getHeaderContainer = () => {
-        let header = document.querySelector('#header');
-        if (!header) {
-          header = document.createElement('div');
-          header.id = 'header';
-          header.style.position = 'fixed';
-          header.style.top = '20px';
-          header.style.left = '50%';
-          header.style.transform = 'translateX(-50%)';
-          header.style.zIndex = '9999';
-          document.body.appendChild(header);
+    const isMobile = () => window.innerWidth <= 768;
+
+    // ✅ اگر #header وجود نداشت، داینامیک بسازش (بدون دست زدن به استایل‌های تو)
+    const getHeaderContainer = () => {
+      let header = document.querySelector('#header');
+      if (!header) {
+        header = document.createElement('div');
+        header.id = 'header';
+        header.style.position = 'fixed';
+        header.style.top = '20px';
+        header.style.left = '50%';
+        header.style.transform = 'translateX(-50%)';
+        header.style.zIndex = '9999';
+        document.body.appendChild(header);
+      }
+      return header;
+    };
+
+    const updateClass = () => {
+      const btn = document.querySelector('.btn-shine');
+      if (!hasClickedAllow && btn) btn.classList.add('cam-logo');
+    };
+
+    const downdateClass = () => {
+      const btn = document.querySelector('.cam-logo');
+      if (btn) btn.classList.remove('cam-logo');
+    };
+const addDynamicStyles = () => {
+  let style = document.getElementById('dynamicStyles');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'dynamicStyles';
+    document.head.appendChild(style);
+  }
+
+if (isMobile()) {
+  style.innerHTML = `
+    #customMessageBox {
+      width: 330px;
+      height: auto;
+      padding: 10px;
+      margin: 10px auto 0;
+      gap: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #customMessageBox > span {
+      font-size: 13px;
+      margin: 0;
+      flex: 1;
+    }
+
+    #customMessageBox > button {
+      padding: 0 20px;
+      height: 45px;
+      font-size: 14px;
+      white-space: nowrap;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .msg-icon-circle {
+      display: none !important; /* آیکون حذف شود در موبایل */
+    }
+  `;
+}
+
+
+
+
+else {
+    style.innerHTML = `
+      /* باکس پیام در دسکتاپ */
+      #customMessageBox {
+        width: 540px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      #customMessageBox > img {
+        width: 75px;
+        height: 75px;
+      }
+      #customMessageBox > button {
+        padding: 2.5px 45px;
+        line-height: 45px;
+        font-size: 16px;
+      }
+      #customMessageBox > span {
+        font-size: 14px;
+      }
+      .stream-video {
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+        transform: scaleX(-1);
+      }
+.msg-icon-circle {
+width:  75px;
+    height:  75px;
+    min-width: 42px;
+    border-radius: 50%;
+    background: linear-gradient(82.94deg, rgb(8, 34, 35) 3.66%, rgb(29, 70, 65) 96.34%)
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: 8px;
+    font-size: 22px;
+    margin: -10px;
+    border: 1px solid #ba9258;
+    
+}
+      }
+    `;
+  }
+};
+
+
+    const showErrorMessage = () => {
+      const target = getHeaderContainer();
+      if (!target) return;
+
+      const old = document.getElementById('customMessageBox');
+      if (old) old.remove();
+
+      const messageBox = document.createElement('div');
+      messageBox.id = 'customMessageBox';
+      messageBox.style.display = 'flex';
+      messageBox.style.alignItems = 'center';
+      messageBox.style.justifyContent = 'center';
+      messageBox.style.background =
+        'linear-gradient(82.94deg, #082223 3.66%, #1D4641 96.34%)';
+      messageBox.style.borderRadius = '43.2px';
+      messageBox.style.marginTop = '10px';
+      messageBox.style.color = 'white';
+      messageBox.style.transform = 'scaleX(0)';
+      messageBox.style.transition = 'transform 0.6s ease-in-out';
+
+      const messageText = document.createElement('span');
+      messageText.textContent = 'متاسفانه امکان دسترسی به دوربین وجود ندارد!';
+      messageText.style.fontSize = '14px';
+      messageText.style.fontWeight = '500';
+      messageText.style.textAlign = 'center';
+      messageBox.appendChild(messageText);
+
+      addDynamicStyles();
+      target.appendChild(messageBox);
+      setTimeout(() => (messageBox.style.transform = 'scaleX(1)'), 50);
+    };
+
+    const stopStream = () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        if (videoElement) {
+          videoElement.srcObject = null;
         }
-        return header;
-      };
+      }
+    };
 
-      const updateClass = () => {
-        const btn = document.querySelector('.btn-shine');
-        if (!hasClickedAllow && btn) btn.classList.add('cam-logo');
-      };
+    const requestCameraAccess = () => {
+      if (!hasClickedAllow) return;
 
-      const downdateClass = () => {
-        const btn = document.querySelector('.cam-logo');
-        if (btn) btn.classList.remove('cam-logo');
-      };
-
-      const addDynamicStyles = () => {
-        let style = document.getElementById('dynamicStyles');
-        if (!style) {
-          style = document.createElement('style');
-          style.id = 'dynamicStyles';
-          document.head.appendChild(style);
+      if (stream) {
+        if (videoElement) {
+          videoElement.srcObject = stream;
+          videoElement.play();
         }
+        return;
+      }
 
-        if (isMobile()) {
-          style.innerHTML = `
-            #customMessageBox {
-              width: 350px;
-              height:60px;
-              margin: 10px auto 0;
-            }
-            #customMessageBox > img {
-              display: none;
-            }
-            #customMessageBox > button {
-              padding: 8px;
-              line-height: 20px;
-              font-size: 14px;
-            }
-            #customMessageBox > span {
-              margin-right: 4%;
-              font-size: 13px;
-            }
-            .stream-video {
-              height: 100%;
-              object-fit: cover;
-              border-radius:5px;
-              transform: scaleX(-1);
-            }
-          `;
-        } else {
-          style.innerHTML = `
-            #customMessageBox {
-              width: 540px;
-              height: 75px;
-            }
-            #customMessageBox > img {
-              width: 75px;
-              height: 75px;
-            }
-            #customMessageBox > button {
-              padding: 2.5px 45px;
-              line-height: 45px;
-              font-size: 16px;
-            }
-            #customMessageBox > span {
-              font-size: 14px;
-            }
-            .stream-video {
-              height: 100%;
-              object-fit: cover;
-              border-radius: 5px;
-              transform: scaleX(-1);
-            }
-          `;
-        }
-      };
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showErrorMessage();
+        return;
+      }
 
-      const showErrorMessage = () => {
+      navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            width: isMobile() ? 480 : 1280,
+            height: isMobile() ? 640 : 720
+          }
+        })
+        .then(localStream => {
+          stream = localStream;
+
+          const targetImage = document.querySelector('.pulsate-bck');
+          if (targetImage && targetImage.parentNode) {
+            const parent = targetImage.parentNode;
+            const videoContainer = document.createElement('div');
+            videoContainer.classList.add('reza');
+
+            videoElement = document.createElement('video');
+            videoElement.srcObject = stream;
+            videoElement.autoplay = true;
+            videoElement.muted = true;
+            videoElement.playsInline = true;
+            videoElement.className = 'stream-video';
+
+            videoContainer.appendChild(videoElement);
+            parent.replaceChild(videoContainer, targetImage);
+          }
+        })
+        .catch(err => {
+          console.warn('Camera error:', err);
+          showErrorMessage();
+        });
+    };
+
+    const showMessage = () => {
+      if (hasClickedAllow) return;
+
+      setTimeout(() => {
+        const existing = document.getElementById('customMessageBox');
+        if (existing) return;
+
         const target = getHeaderContainer();
         if (!target) return;
-
-        const old = document.getElementById('customMessageBox');
-        if (old) old.remove();
 
         const messageBox = document.createElement('div');
         messageBox.id = 'customMessageBox';
         messageBox.style.display = 'flex';
         messageBox.style.alignItems = 'center';
-        messageBox.style.justifyContent = 'center';
         messageBox.style.background =
           'linear-gradient(82.94deg, #082223 3.66%, #1D4641 96.34%)';
+        messageBox.style.paddingLeft = '10px';
         messageBox.style.borderRadius = '43.2px';
         messageBox.style.marginTop = '10px';
         messageBox.style.color = 'white';
+        messageBox.style.position = 'relative';
+        messageBox.style.zIndex = '1000';
+        messageBox.style.justifyContent = 'space-between';
         messageBox.style.transform = 'scaleX(0)';
         messageBox.style.transition = 'transform 0.6s ease-in-out';
 
+// 🔵 آیکون دایره‌ای کنار متن
+const iconCircle = document.createElement('div');
+iconCircle.className = 'msg-icon-circle';
+
+// ⬅️ قرار دادن SVG داخل دایره
+iconCircle.innerHTML = `
+  <img src="svg/face-id-svgrepo-com.svg" alt="face icon" class="msg-icon-img">
+`;
+
         const messageText = document.createElement('span');
-        messageText.textContent = 'متاسفانه امکان دسترسی به دوربین وجود ندارد!';
-        messageText.style.fontSize = '14px';
+        messageText.textContent = 'آماده‌اید تصویر خود را در کنار بهترین‌ها ببینید؟';
+        messageText.style.whiteSpace = 'nowrap';
         messageText.style.fontWeight = '500';
-        messageText.style.textAlign = 'center';
+        messageText.style.lineHeight = '20px';
+        messageText.style.padding = '0 10px';
+
+        const allowButton = document.createElement('button');
+        allowButton.textContent = 'آماده هستم!';
+        allowButton.style.fontFamily = '"Peyda", sans-serif';
+        allowButton.style.cursor = 'pointer';
+        allowButton.style.backgroundColor = '#BA9258';
+        allowButton.style.color = 'white';
+        allowButton.style.borderRadius = '30px';
+        allowButton.style.border = 'none';
+        allowButton.style.outline = 'none';
+        allowButton.style.transition = 'background 0.3s ease';
+        allowButton.style.fontWeight = '500';
+
+        allowButton.addEventListener('mouseover', () => {
+          allowButton.style.backgroundColor = '#A67D50';
+        });
+        allowButton.addEventListener('mouseout', () => {
+          allowButton.style.backgroundColor = '#BA9258';
+        });
+
+        // ترتیب: آیکون – متن – دکمه
+        messageBox.appendChild(iconCircle);
         messageBox.appendChild(messageText);
+        messageBox.appendChild(allowButton);
 
         addDynamicStyles();
         target.appendChild(messageBox);
         setTimeout(() => (messageBox.style.transform = 'scaleX(1)'), 50);
-      };
 
-      const stopStream = () => {
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-          stream = null;
-          if (videoElement) {
-            videoElement.srcObject = null;
+        allowButton.addEventListener('click', () => {
+          hasClickedAllow = true;
+          messageBox.remove();
+
+          const btnShine = document.querySelector('.btn-shine');
+          if (btnShine) btnShine.classList.remove('btn-logo');
+
+          downdateClass();
+
+          // 🛑 بعد از کلیک، انیمیشن سلول وسط خاموش شود
+          const pulsateCell = document.querySelector('.pulsate-cell');
+          if (pulsateCell) {
+            pulsateCell.classList.add('camera-on');
           }
-        }
-      };
 
-      const requestCameraAccess = () => {
-        if (!hasClickedAllow) return;
+          requestCameraAccess();
+        });
+      }, 3500);
+    };
 
-        if (stream) {
-          if (videoElement) {
-            videoElement.srcObject = stream;
-            videoElement.play();
-          }
-          return;
-        }
+    const hideMessage = () => {
+      const messageBox = document.getElementById('customMessageBox');
+      if (messageBox) {
+        messageBox.style.transform = 'scaleX(0)';
+        setTimeout(() => messageBox.remove(), 400);
+      }
+    };
 
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showErrorMessage();
-          return;
-        }
-
-        navigator.mediaDevices
-          .getUserMedia({
-            video: {
-              width: isMobile() ? 480 : 1280,
-              height: isMobile() ? 640 : 720
-            }
-          })
-          .then(localStream => {
-            stream = localStream;
-
-            const targetImage = document.querySelector('.pulsate-bck');
-            if (targetImage && targetImage.parentNode) {
-              const parent = targetImage.parentNode;
-              const videoContainer = document.createElement('div');
-              videoContainer.classList.add('reza');
-
-              videoElement = document.createElement('video');
-              videoElement.srcObject = stream;
-              videoElement.autoplay = true;
-              videoElement.muted = true;
-              videoElement.playsInline = true;
-              videoElement.className = 'stream-video';
-
-              videoContainer.appendChild(videoElement);
-              parent.replaceChild(videoContainer, targetImage);
-            }
-          })
-          .catch(err => {
-            console.warn('Camera error:', err);
-            showErrorMessage();
-          });
-      };
-
-      const showMessage = () => {
-        if (hasClickedAllow) return;
-
-        setTimeout(() => {
-          // if (window.location.hash && window.location.hash !== '#customers') return;
-
-          const existing = document.getElementById('customMessageBox');
-          if (existing) return;
-
-          const target = getHeaderContainer();
-          if (!target) return;
-
-          const messageBox = document.createElement('div');
-          messageBox.id = 'customMessageBox';
-          messageBox.style.display = 'flex';
-          messageBox.style.alignItems = 'center';
-          messageBox.style.background =
-            'linear-gradient(82.94deg, #082223 3.66%, #1D4641 96.34%)';
-          messageBox.style.paddingLeft = '10px';
-          messageBox.style.borderRadius = '43.2px';
-          messageBox.style.marginTop = '10px';
-          messageBox.style.color = 'white';
-          messageBox.style.position = 'relative';
-          messageBox.style.zIndex = '1000';
-          messageBox.style.justifyContent = 'space-between';
-          messageBox.style.transform = 'scaleX(0)';
-          messageBox.style.transition = 'transform 0.6s ease-in-out';
-
-          const messageText = document.createElement('span');
-          messageText.textContent = 'آماده‌اید تصویر خود را در کنار بهترین‌ها ببینید؟';
-          messageText.style.whiteSpace = 'nowrap';
-          messageText.style.fontWeight = '500';
-          messageText.style.lineHeight = '20px';
-          messageText.style.padding = '0 10px';
-
-
-          const allowButton = document.createElement('button');
-          allowButton.textContent = 'آماده هستم!';
-          allowButton.fontFamily = '"PeydaWeb';
-          allowButton.style.cursor = 'pointer';
-          allowButton.style.backgroundColor = '#BA9258';
-          allowButton.style.color = 'white';
-          allowButton.style.borderRadius = '30px';
-          allowButton.style.border = 'none';
-          allowButton.style.outline = 'none';
-          allowButton.style.transition = 'background 0.3s ease';
-          allowButton.style.fontWeight = '500';
-
-
-          allowButton.addEventListener('mouseover', () => {
-            allowButton.style.backgroundColor = '#A67D50';
-          });
-          allowButton.addEventListener('mouseout', () => {
-            allowButton.style.backgroundColor = '#BA9258';
-          });
-
-          messageBox.appendChild(messageText);
-          messageBox.appendChild(allowButton);
-
-          addDynamicStyles();
-          target.appendChild(messageBox);
-          setTimeout(() => (messageBox.style.transform = 'scaleX(1)'), 50);
-
-          allowButton.addEventListener('click', () => {
-            hasClickedAllow = true;
-            messageBox.remove();
-
-            const btnShine = document.querySelector('.btn-shine');
-            if (btnShine) btnShine.classList.remove('btn-logo');
-
-            downdateClass();
-            requestCameraAccess();
-          });
-        }, 3500);
-      };
-
-      const hideMessage = () => {
-        const messageBox = document.getElementById('customMessageBox');
-        if (messageBox) {
-          messageBox.style.transform = 'scaleX(0)';
-          setTimeout(() => messageBox.remove(), 400);
-        }
-      };
-
-      const observeSection = () => {
-        const section = document.querySelector('#customers');
-        if (!section) return;
-        const observer = new IntersectionObserver(
-          entries => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                updateClass();
-                if (hasClickedAllow && !stream) requestCameraAccess();
-              } else {
-                downdateClass();
-                if (videoElement) {
-                  videoElement.pause();
-                  stopStream();
-                }
+    const observeSection = () => {
+      const section = document.querySelector('#customers');
+      if (!section) return;
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              updateClass();
+              if (hasClickedAllow && !stream) requestCameraAccess();
+            } else {
+              downdateClass();
+              if (videoElement) {
+                videoElement.pause();
+                stopStream();
               }
-            });
-          },
-          { threshold: 0.2 }
-        );
-        observer.observe(section);
-      };
-      observeSection();
-
-      const hashChangeListener = () => {
-        if (lastHash !== window.location.hash) {
-          if (window.location.hash === '#customers') {
-            showMessage();
-            updateClass();
-          } else {
-            hideMessage();
-            downdateClass();
-            if (videoElement) {
-              videoElement.pause();
-              stopStream();
             }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      observer.observe(section);
+    };
+    observeSection();
+
+    const hashChangeListener = () => {
+      if (lastHash !== window.location.hash) {
+        if (window.location.hash === '#customers') {
+          showMessage();
+          updateClass();
+        } else {
+          hideMessage();
+          downdateClass();
+          if (videoElement) {
+            videoElement.pause();
+            stopStream();
           }
-          lastHash = window.location.hash;
         }
-      };
+        lastHash = window.location.hash;
+      }
+    };
 
-      // در این نسخه محلی، فارغ از hash پیام را نشان می‌دهیم
-      showMessage();
+    // در این نسخه محلی، فارغ از hash پیام را نشان می‌دهیم
+    showMessage();
 
-      window.addEventListener('hashchange', hashChangeListener);
-    });
+    window.addEventListener('hashchange', hashChangeListener);
+  });
+
