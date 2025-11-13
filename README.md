@@ -37,4 +37,3 @@ Created by [Alireza K](https://github.com/AlirezaKmaxim)
 [![GitHub](https://img.shields.io/badge/GitHub-AlirezaKmaxim-181717?style=for-the-badge&logo=github)](https://github.com/AlirezaKmaxim)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-YourProfile-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/your-profile/)
 
-> **Note:** Replace `[Your Name]` and the LinkedIn link with your own information.
