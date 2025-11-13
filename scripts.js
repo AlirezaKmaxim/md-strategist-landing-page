@@ -68,7 +68,7 @@
         fadeEffect: { crossFade: true },
         loop: true,
         allowTouchMove: false,
-        speed: 900,
+        speed: 1500,
         autoplay: false,
       });
 
@@ -160,23 +160,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Camera API 
 
 
@@ -191,7 +174,6 @@
 
     const isMobile = () => window.innerWidth <= 768;
 
-    // ✅ اگر #header وجود نداشت، داینامیک بسازش (بدون دست زدن به استایل‌های تو)
     const getHeaderContainer = () => {
       let header = document.querySelector('#header');
       if (!header) {
@@ -482,7 +464,7 @@ iconCircle.innerHTML = `
 
           downdateClass();
 
-          // 🛑 بعد از کلیک، انیمیشن سلول وسط خاموش شود
+         
           const pulsateCell = document.querySelector('.pulsate-cell');
           if (pulsateCell) {
             pulsateCell.classList.add('camera-on');

@@ -191,6 +191,10 @@
 .carousel:hover {
     transform:translateY(-7px);
     transition: .4s ease-in-out;
+    
+}
+.swiper:hover {
+    border: 1px solid #ff6608;
 }
     /* Tablet styles */
     @media (min-width: 769px) and (max-width: 1024px) {
