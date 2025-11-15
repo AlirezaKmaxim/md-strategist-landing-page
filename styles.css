@@ -105,8 +105,8 @@
 
     .swiper-fade .swiper-slide {
       pointer-events: none;
-      transition: opacity 1200ms ease-in, filter 4100ms ease-out;
-      filter: blur(20px);
+      transition: opacity 800ms ease-in, filter 2500ms ease-out;
+      filter: blur(25px);
       opacity: 0.1;
     }
 
@@ -324,7 +324,7 @@
 
       /* بلر کمتر در موبایل */
       .swiper-fade .swiper-slide {
-        filter: blur(9px) !important;
+        filter: blur(8px) !important;
         opacity: 0;
         transition-duration: 600ms;
       }
@@ -381,7 +381,10 @@ width: 80px;
     display: none !important;
     
   }
-
+  .parent .carousel.pulsate-cell {
+    grid-row: 2;
+    grid-column: 2;
+  }
   
   #customMessageBox > button {
   padding: 0 20px;
