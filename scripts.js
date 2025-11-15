@@ -68,7 +68,7 @@
         fadeEffect: { crossFade: true },
         loop: true,
         allowTouchMove: false,
-        speed: 8500,
+        speed: 111111111111111,
         autoplay: false,
       });
 

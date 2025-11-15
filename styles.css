@@ -105,9 +105,9 @@
 
     .swiper-fade .swiper-slide {
       pointer-events: none;
-      transition: opacity 700ms ease-in-out, filter 700ms ease-in-out;
-      filter: blur(35px);
-      opacity: 0;
+      transition: opacity 1200ms ease-in, filter 4100ms ease-out;
+      filter: blur(20px);
+      opacity: 0.1;
     }
 
     .swiper-fade .swiper-slide-active {
