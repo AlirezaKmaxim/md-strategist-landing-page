@@ -68,7 +68,7 @@
         fadeEffect: { crossFade: true },
         loop: true,
         allowTouchMove: false,
-        speed: 111111111111111,
+        speed: 1110,
         autoplay: false,
       });
 
@@ -93,7 +93,7 @@
     });
 
     //  تاخیر رندوم بین تغییرها
-    const randomDelay = () => 700 + Math.random() * 900;
+    const randomDelay = () => 1100 + Math.random() * 1200;
 
     const getNewUniqueLogoForSwiper = (swiperIndex) => {
       const used = new Set(
@@ -138,7 +138,7 @@
       const newLogoIdx = getNewUniqueLogoForSwiper(swiperIndex);
 
       currentLogoIndex[swiperIndex] = newLogoIdx;
-      swiper.slideToLoop(newLogoIdx, 900); // فید ۹۰۰ms
+      swiper.slideToLoop(newLogoIdx, 1000); // فید ۹۰۰ms
 
       setTimeout(tick, randomDelay());
     };
