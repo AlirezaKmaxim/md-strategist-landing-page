@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const swipers = [];
   const currentLogoIndex = []; // لوگوی فعلی هر سوایپر
   const lastChangeAt = [];     // زمان آخرین تغییر هر سوایپر
-  let firstChangeDone = false; // برای اولین تیک
+  let firstChangeDone = false; // برای این‌که اولین بار فقط ۱ اسلایدر عوض بشه
 
   // کمکى: شافل کردن آرایه (الگوریتم Fisher–Yates)
   const shuffle = (arr) => {
@@ -45,65 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return arr;
   };
 
-  // آماده‌سازی اسلایدرها
-  document.querySelectorAll('.logo-swiper').forEach((swiperEl, index) => {
-    const wrapper = swiperEl.querySelector('.swiper-wrapper');
-    if (!wrapper) return;
-
-    // تمیز کردن محتوا
-    wrapper.innerHTML = "";
-
-    // همه لوگوها رو توی هر اسلایدر می‌ریزیم
-    logoPaths.forEach((src) => {
-      const slide = document.createElement('div');
-      slide.className = 'swiper-slide';
-
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = "";
-
-      slide.appendChild(img);
-      wrapper.appendChild(slide);
-    });
-
-    const swiper = new Swiper(swiperEl, {
-      effect: "fade",
-      fadeEffect: { crossFade: true },
-      loop: true,
-      allowTouchMove: false,
-      speed: 300,
-      autoplay: false,
-    });
-
-    swipers.push(swiper);
-  });
-
-  if (!swipers.length) return;
-
-  // اگر لوگو کمتر از خونه‌هاست
-  if (logoPaths.length < swipers.length) {
-    console.warn("تعداد لوگوها کمتر از تعداد خانه‌هاست؛ یکتا بودن همزمان ممکن نیست.");
-  }
-
-  // مقداردهی اولیه: هر خونه یه لوگوی متفاوت بگیره
-  const allIndices = [...Array(logoPaths.length).keys()]; // [0..N-1]
-  shuffle(allIndices);
-
-  const nowInit = performance.now();
-  swipers.forEach((swiper, i) => {
-    const idx = allIndices[i % allIndices.length];
-    currentLogoIndex[i] = idx;
-    swiper.slideToLoop(idx, 0); // بدون انیمیشن
-
-    // کمی رندوم تا همه هم‌زمان نباشن
-    lastChangeAt[i] = nowInit - Math.random() * 4000;
-  });
-
-  // تاخیر رندوم بین تیک‌ها
   const randomDelay = () => 900 + Math.random() * 2100;
 
   const getNewUniqueLogoForSwiper = (swiperIndex) => {
-    // سعی می‌کنیم لوگوی جدید تکراری با بقیه نباشه
+    // سعی می‌کنیم لوگوی جدید با بقیه تکراری نباشه
     const used = new Set(
       currentLogoIndex.filter((_, i) => i !== swiperIndex)
     );
@@ -141,17 +86,17 @@ document.addEventListener('DOMContentLoaded', () => {
       age: now - lastChangeAt[i],
     }));
 
-    // قدیمی‌ترین‌ها بالاتر
+    // قدیمی‌ترها بالاتر
     ages.sort((a, b) => b.age - a.age);
 
     let countToChange;
 
     if (!firstChangeDone) {
-      // اولین تیک: فقط یک اسلایدر
+      // اولین تیک: فقط ۱ اسلایدر
       countToChange = 1;
       firstChangeDone = true;
     } else {
-      // بعد از آن: ۵۰٪ یک عدد، ۵۰٪ دو عدد (اگه بشه)
+      // بعد از آن: ۵۰٪ یک عدد، ۵۰٪ دو عدد (اگر بشود)
       if (Math.random() < 0.5) {
         countToChange = 1;
       } else {
@@ -174,16 +119,88 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(tick, randomDelay());
   };
 
-  // شروع چرخه
-  setTimeout(tick, randomDelay());
+  const initSwipers = () => {
+    // آماده‌سازی اسلایدرها
+    document.querySelectorAll('.logo-swiper').forEach((swiperEl) => {
+      const wrapper = swiperEl.querySelector('.swiper-wrapper');
+      if (!wrapper) return;
 
-  // بعد از آماده شدن، گرید رو نشون بده
-  const grid = document.querySelector('.parent');
-  if (grid) {
-    requestAnimationFrame(() => {
-      grid.classList.add('grid-ready');
+      // تمیز کردن محتوا
+      wrapper.innerHTML = "";
+
+      // همه لوگوها رو توی هر اسلایدر می‌ریزیم
+      logoPaths.forEach((src) => {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = "";
+
+        slide.appendChild(img);
+        wrapper.appendChild(slide);
+      });
+
+      const swiper = new Swiper(swiperEl, {
+        effect: "fade",
+        fadeEffect: { crossFade: true },
+        loop: true,
+        allowTouchMove: false,
+        speed: 900, // هماهنگ با CSS فید
+        autoplay: false,
+      });
+
+      swipers.push(swiper);
     });
-  }
+
+    if (!swipers.length) return;
+
+    // اگر لوگو کمتر از خونه‌هاست
+    if (logoPaths.length < swipers.length) {
+      console.warn("تعداد لوگوها کمتر از تعداد خانه‌هاست؛ یکتا بودن همزمان ممکن نیست.");
+    }
+
+    // مقداردهی اولیه: هر خونه یه لوگوی متفاوت بگیره
+    const allIndices = [...Array(logoPaths.length).keys()]; // [0..N-1]
+    shuffle(allIndices);
+
+    const nowInit = performance.now();
+    swipers.forEach((swiper, i) => {
+      const idx = allIndices[i % allIndices.length];
+      currentLogoIndex[i] = idx;
+      swiper.slideToLoop(idx, 0); // بدون انیمیشن
+
+      // کمی رندوم تا همه هم‌زمان نباشن
+      lastChangeAt[i] = nowInit - Math.random() * 4000;
+    });
+
+    // شروع چرخه
+    setTimeout(tick, randomDelay());
+  };
+
+  // 🔹 قبل از ساخت اسلایدرها، همه لوگوها را preload می‌کنیم
+  const preloadLogos = () => {
+    const promises = logoPaths.map((src) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = img.onerror = resolve;
+        img.src = src;
+      });
+    });
+    return Promise.all(promises);
+  };
+
+  // ⏱ اول preload → بعد initSwipers → بعد گرید رو نشون بده
+  preloadLogos().then(() => {
+    initSwipers();
+
+    const grid = document.querySelector('.parent');
+    if (grid) {
+      requestAnimationFrame(() => {
+        grid.classList.add('grid-ready');
+      });
+    }
+  });
 });
 
 
