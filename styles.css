@@ -98,23 +98,39 @@
       50% { transform: scale(1.12); }
     }
 
-    /* Swiper Blur Effects */
-    .swiper-fade.swiper-free-mode .swiper-slide {
-      transition-timing-function: ease-out;
-    }
+/* Swiper Fade – نسخه نرم‌تر */
 
-    .swiper-fade .swiper-slide {
-      pointer-events: none;
-      transition: opacity 800ms ease-in, filter 2500ms ease-out;
-      filter: blur(25px);
-      opacity: 0.1;
-    }
+.swiper-fade.swiper-free-mode .swiper-slide {
+  transition-timing-function: ease-out;
+}
 
-    .swiper-fade .swiper-slide-active {
-      pointer-events: auto;
-      filter: blur(0);
-      opacity: 1;
-    }
+/* اسلایدهای غیرفعال (در حال رفتن) */
+.swiper-fade .swiper-slide {
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(10px);
+
+  /* 
+    1) blur به‌آرومی در 0.9s زیاد می‌شود
+    2) بعد از 0.9s، opacity در 0.3s محو می‌شود
+    → یعنی هنوز دو فاز داریم، اما بدون پله‌پله‌ی تیز
+  */
+  transition:
+    filter 0.43s ease-out,
+    opacity 0.3s ease-in 0.9s;
+}
+
+/* اسلاید فعال (در حال آمدن) */
+.swiper-fade .swiper-slide-active {
+  pointer-events: auto;
+  opacity: 1;
+  filter: blur(0);
+
+  /* ظاهر شدن کمی نرم‌تر از قبل ولی هنوز سریع */
+  transition:
+    filter 0.28s ease-in,
+    opacity 0.28s ease-out;
+}
 
     /* ویدیو استریم */
     .stream-video {

@@ -1,6 +1,6 @@
 // ===================== LOGO SWIPERS =====================
 document.addEventListener('DOMContentLoaded', () => {
-  // All Logo Pool for implement into Html
+  // All logos
   const logoPaths = [
     "svg/Moshtarian-VisionHealth-Sabz-1.svg",
     "svg/Moshtarian-InBody-Sabz-1.svg",
@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const swipers = [];
-  const currentLogoIndex = []; // لوگوی فعلی هر سوایپر
-  const lastChangeAt = [];     // زمان آخرین تغییر هر سوایپر
-  let firstChangeDone = false; // برای این‌که اولین بار فقط ۱ اسلایدر عوض بشه
+  const currentLogoIndex = [];
+  const lastChangeAt = [];
+  let firstChangeDone = false;
 
-  // کمکى: شافل کردن آرایه (الگوریتم Fisher–Yates)
+  // Shuffle helper
   const shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -45,32 +45,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return arr;
   };
 
-  const randomDelay = () => 900 + Math.random() * 2100;
+  const randomDelay = () => 900 + Math.random() * 1800;
 
   const getNewUniqueLogoForSwiper = (swiperIndex) => {
-    // سعی می‌کنیم لوگوی جدید با بقیه تکراری نباشه
     const used = new Set(
       currentLogoIndex.filter((_, i) => i !== swiperIndex)
     );
 
     const candidates = [];
     for (let i = 0; i < logoPaths.length; i++) {
-      if (!used.has(i)) {
-        candidates.push(i);
-      }
+      if (!used.has(i)) candidates.push(i);
     }
 
     const pool = candidates.length ? candidates : [...Array(logoPaths.length).keys()];
+    let newIdx, oldIdx = currentLogoIndex[swiperIndex];
 
-    let newIdx;
-    const oldIdx = currentLogoIndex[swiperIndex];
-    if (pool.length === 1) {
-      newIdx = pool[0];
-    } else {
-      do {
-        newIdx = pool[Math.floor(Math.random() * pool.length)];
-      } while (newIdx === oldIdx);
-    }
+    do newIdx = pool[Math.floor(Math.random() * pool.length)];
+    while (newIdx === oldIdx);
 
     return newIdx;
   };
@@ -79,29 +70,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!swipers.length) return;
 
     const now = performance.now();
-
-    // لیست {index, age} برای هر سوایپر
     const ages = swipers.map((_, i) => ({
       index: i,
       age: now - lastChangeAt[i],
     }));
 
-    // قدیمی‌ترها بالاتر
     ages.sort((a, b) => b.age - a.age);
 
     let countToChange;
 
     if (!firstChangeDone) {
-      // اولین تیک: فقط ۱ اسلایدر
       countToChange = 1;
       firstChangeDone = true;
     } else {
-      // بعد از آن: ۵۰٪ یک عدد، ۵۰٪ دو عدد (اگر بشود)
-      if (Math.random() < 0.5) {
-        countToChange = 1;
-      } else {
-        countToChange = Math.min(2, ages.length);
-      }
+      countToChange = Math.random() < 0.5 ? 1 : Math.min(2, ages.length);
     }
 
     const toChange = ages.slice(0, countToChange);
@@ -109,99 +91,72 @@ document.addEventListener('DOMContentLoaded', () => {
     toChange.forEach(({ index }) => {
       const swiper = swipers[index];
       const newLogoIdx = getNewUniqueLogoForSwiper(index);
-
       currentLogoIndex[index] = newLogoIdx;
       lastChangeAt[index] = now;
-
-      swiper.slideToLoop(newLogoIdx, 800); // انیمیشن فید
+      swiper.slideToLoop(newLogoIdx, 1100);
     });
 
     setTimeout(tick, randomDelay());
   };
 
   const initSwipers = () => {
-    // آماده‌سازی اسلایدرها
     document.querySelectorAll('.logo-swiper').forEach((swiperEl) => {
       const wrapper = swiperEl.querySelector('.swiper-wrapper');
       if (!wrapper) return;
 
-      // تمیز کردن محتوا
       wrapper.innerHTML = "";
 
-      // همه لوگوها رو توی هر اسلایدر می‌ریزیم
       logoPaths.forEach((src) => {
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
-
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = "";
-
-        slide.appendChild(img);
+        slide.innerHTML = `<img src="${src}" alt="">`;
         wrapper.appendChild(slide);
       });
 
       const swiper = new Swiper(swiperEl, {
         effect: "fade",
         fadeEffect: { crossFade: true },
-        loop: true,
         allowTouchMove: false,
-        speed: 900, // هماهنگ با CSS فید
-        autoplay: false,
+        loop: true,
+        speed: 1100, // هماهنگ با blur stepping
       });
 
       swipers.push(swiper);
     });
 
-    if (!swipers.length) return;
-
-    // اگر لوگو کمتر از خونه‌هاست
-    if (logoPaths.length < swipers.length) {
-      console.warn("تعداد لوگوها کمتر از تعداد خانه‌هاست؛ یکتا بودن همزمان ممکن نیست.");
-    }
-
-    // مقداردهی اولیه: هر خونه یه لوگوی متفاوت بگیره
-    const allIndices = [...Array(logoPaths.length).keys()]; // [0..N-1]
-    shuffle(allIndices);
-
+    const allIdx = shuffle([...Array(logoPaths.length).keys()]);
     const nowInit = performance.now();
-    swipers.forEach((swiper, i) => {
-      const idx = allIndices[i % allIndices.length];
-      currentLogoIndex[i] = idx;
-      swiper.slideToLoop(idx, 0); // بدون انیمیشن
 
-      // کمی رندوم تا همه هم‌زمان نباشن
-      lastChangeAt[i] = nowInit - Math.random() * 4000;
+    swipers.forEach((swiper, i) => {
+      const idx = allIdx[i % allIdx.length];
+      currentLogoIndex[i] = idx;
+      swiper.slideToLoop(idx, 0);
+      lastChangeAt[i] = nowInit - Math.random() * 3000;
     });
 
-    // شروع چرخه
     setTimeout(tick, randomDelay());
   };
 
-  // 🔹 قبل از ساخت اسلایدرها، همه لوگوها را preload می‌کنیم
-  const preloadLogos = () => {
-    const promises = logoPaths.map((src) => {
-      return new Promise((resolve) => {
+  // ----------- Preload همه لوگوها قبل از نمایش -----------
+  const preloadLogos = () =>
+    Promise.all(
+      logoPaths.map(src => new Promise((res) => {
         const img = new Image();
-        img.onload = img.onerror = resolve;
+        img.onload = img.onerror = res;
         img.src = src;
-      });
-    });
-    return Promise.all(promises);
-  };
+      }))
+    );
 
-  // ⏱ اول preload → بعد initSwipers → بعد گرید رو نشون بده
   preloadLogos().then(() => {
     initSwipers();
 
     const grid = document.querySelector('.parent');
     if (grid) {
-      requestAnimationFrame(() => {
-        grid.classList.add('grid-ready');
-      });
+      requestAnimationFrame(() => grid.classList.add('grid-ready'));
     }
   });
 });
+
 
 
 // ===================== Camera API =====================
