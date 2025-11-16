@@ -303,10 +303,10 @@ body {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
-    max-width: 480px;       /* روی موبایل بزرگ هم زیاد نشه */
+    /* max-width: 480px; */       /* روی موبایل بزرگ هم زیاد نشه */
     margin: 0 auto;         /* وسط صفحه */
-    row-gap: 18px;
-    column-gap: 12px;        /* فاصله بین دو کارت در هر ردیف */
+    row-gap: 27px;
+    column-gap: 15px;        /* فاصله بین دو کارت در هر ردیف */
   }
 
   /* فقط 10 خانه اول نمایش داده شوند */
