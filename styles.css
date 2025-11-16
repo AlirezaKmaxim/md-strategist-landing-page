@@ -1,4 +1,4 @@
-    @font-face {
+@font-face {
   font-family: "Peyda";
   src: url("fonts/PeydaWeb-Regular.woff") format("woff");
   font-weight: 400;
@@ -12,21 +12,22 @@
   font-style: normal;
 }
 
-    body {
-      background-color: #FEFEFE;
-      background-image: url(pictures/LINES2-5.webp);
-      background-position: bottom center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      font-family: "Peyda", sans-serif;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    /* اول گرید مخفی باشه */
+body {
+  background-color: #FEFEFE;
+  background-image: url(pictures/LINES2-5.webp);
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: "Peyda", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* اول گرید مخفی باشه */
 .parent {
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
@@ -36,70 +37,68 @@
 .parent.grid-ready {
   opacity: 1;
 }
-  
-    /* Main-Grid */
-    .parent {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 20px;
-      width: 90vw;
-      max-width: 1200px;
-    }
 
-    /* Grid Childs */
-    .carousel {
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      padding: 10px;
-    }
+/* Main-Grid */
+.parent {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 20px;
+  width: 90vw;
+  max-width: 1200px;
+}
 
-    .swiper {
-      width: 212px;
-      height: 82px;
-      border: 1px solid rgb(80, 107, 104);
-      border-radius: 10px;
-      box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
-    }
+/* Grid Childs */
+.carousel {
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 10px;
+}
 
-    .swiper-slide {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 1.5s ease;
-      background-color: white;
-    }
+.swiper {
+  width: 212px;
+  height: 82px;
+  border: 1px solid rgb(80, 107, 104);
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+}
 
-    .swiper-slide img {
-      height: auto;
-      max-width: 100%;
-      object-fit: contain;
-      transition: transform 0.4s ease;
-      image-rendering: crisp-edges;
-      image-rendering: -webkit-optimize-contrast;
-    }
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
 
-    .carousel:hover img {
-      transform: scale(1.05);
-    }
+.swiper-slide img {
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+}
 
-    /* set centeral as camera mirror */
-    .pulsate-cell {
-      animation: pulsate-bck 1.2s ease-in-out infinite both;
-      border: none !important;
-    }
+.carousel:hover img {
+  transform: scale(1.05);
+}
 
-    @keyframes pulsate-bck {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.12); }
-    }
+/* set central as camera mirror */
+.pulsate-cell {
+  animation: pulsate-bck 1.2s ease-in-out infinite both;
+  border: none !important;
+}
+
+@keyframes pulsate-bck {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
 
 /* Swiper Fade – نسخه نرم‌تر */
-
 .swiper-fade.swiper-free-mode .swiper-slide {
   transition-timing-function: ease-out;
 }
@@ -110,14 +109,13 @@
   opacity: 0;
   filter: blur(10px);
 
-  /* 
-    1) blur به‌آرومی در 0.9s زیاد می‌شود
+  /*
+    1) blur نرم در 0.9s
     2) بعد از 0.9s، opacity در 0.3s محو می‌شود
-    → یعنی هنوز دو فاز داریم، اما بدون پله‌پله‌ی تیز
   */
   transition:
-    filter 0.4s ease-out,
-    opacity 0.25s ease-in 0.51s;
+    filter 0.9s ease-out,
+    opacity 0.3s ease-out 0.9s;
 }
 
 /* اسلاید فعال (در حال آمدن) */
@@ -126,264 +124,259 @@
   opacity: 1;
   filter: blur(0);
 
-  /* ظاهر شدن کمی نرم‌تر از قبل ولی هنوز سریع */
+  /* ظاهر شدن نرم ولی سریع */
   transition:
-    filter 0.28s ease-in,
-    opacity 0.28s ease-out;
+    filter 0.28s ease-out,
+    opacity 0.28s ease-in;
 }
 
-    /* ویدیو استریم */
-    .stream-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-      transform: scaleX(-1);
-    }
+/* ویدیو استریم */
+.stream-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  transform: scaleX(-1);
+}
 
-    /* باکس ویدیو */
-    .reza {
-      width: 100%;
-      height: 100%;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      background-color: transparent;
-    }
+/* باکس ویدیو */
+.reza {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  background-color: transparent;
+}
 
-    .pulsate-cell .swiper-slide {
-      color: rgb(8, 34, 35);
-      font-size: 18px;
-      font-weight: 600;
-      background: linear-gradient(45deg, #ad8d5a 0%, #D9B67F 100%);
-    }
+.pulsate-cell .swiper-slide {
+  color: rgb(8, 34, 35);
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(45deg, #ad8d5a 0%, #D9B67F 100%);
+}
 
-    .carousel.pulsate-cell .swiper {
-      border: 0px solid #af8f5a !important;
-    }
+.carousel.pulsate-cell .swiper {
+  border: 0px solid #af8f5a !important;
+}
 
-    .top-flex-wrapper {
-      display: flex;
-      width: 100%;
-      max-width: 1220px;
-      gap: 20px;
-      align-items: center;
-      margin: 70px 0;
-    }
+.top-flex-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1220px;
+  gap: 20px;
+  align-items: center;
+  margin: 70px 0;
+}
 
-    .top-flex-wrapper img {
-      height: 80px;
-      width: 23px;
-    }
+.top-flex-wrapper img {
+  height: 80px;
+  width: 23px;
+}
 
-    .text-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+.text-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .div2,
-    .div3 {
-      display: flex;
-      align-items: center;
-    }
+.div2,
+.div3 {
+  display: flex;
+  align-items: center;
+}
 
-    .text-column span {
-      color: #08394b;
-      margin: 0;
-    }
+.text-column span {
+  color: #08394b;
+  margin: 0;
+}
 
-    .div2 span {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
+.div2 span {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
 
-    .div3 span {
-      font-size: 20px;
-      line-height: 1.9em;
-      color: #cba56a;
-    }
+.div3 span {
+  font-size: 20px;
+  line-height: 1.9em;
+  color: #cba56a;
+}
+
 .carousel:hover {
-    transform:translateY(-7px);
-    transition: .4s ease-in-out;
-    
+  transform: translateY(-7px);
+  transition: 0.4s ease-in-out;
 }
+
 .swiper:hover {
-    border: 1px solid #ff6608;
+  border: 1px solid #ff6608;
 }
-    /* Tablet styles */
-    @media (min-width: 769px) and (max-width: 1024px) {
-      body {
-        padding-top: 120px;
-      }
 
-      .top-flex-wrapper {
-        margin: 50px 0 40px;
-        gap: 16px;
-        max-width: 95%;
-      }
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body {
+    padding-top: 120px;
+  }
 
-      .top-flex-wrapper img {
-        height: 70px;
-        width: 20px;
-      }
+  .top-flex-wrapper {
+    margin: 50px 0 40px;
+    gap: 16px;
+    max-width: 95%;
+  }
 
-      .text-column {
-        gap: 6px;
-      }
+  .top-flex-wrapper img {
+    height: 70px;
+    width: 20px;
+  }
 
-      .div2 span {
-        font-size: 24px;
-      }
+  .text-column {
+    gap: 6px;
+  }
 
-      .div3 span {
-        font-size: 18px;
-        line-height: 1.8;
-      }
+  .div2 span {
+    font-size: 24px;
+  }
 
-      .parent {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(5, 1fr);
-        width: 88%;
-        max-width: 100%;
-        padding: 0 12px 24px;
-        row-gap: 12px;
-        column-gap: 10px;
-      }
+  .div3 span {
+    font-size: 18px;
+    line-height: 1.8;
+  }
 
-      .carousel {
-        padding: 8px;
-      }
+  .parent {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 88%;
+    max-width: 100%;
+    padding: 0 12px 24px;
+    row-gap: 12px;
+    column-gap: 10px;
+  }
 
-      .swiper {
-        width: 100%;
-        height: 78px;
-      }
+  .carousel {
+    padding: 8px;
+  }
 
-      .pulsate-cell .swiper-slide {
-        font-size: 16px;
-      }
-    }
+  .swiper {
+    width: 100%;
+    height: 78px;
+  }
 
-    /* Mobile styles */
-    @media (max-width: 768px) {
-      body {
-        background-position: top center;
-        padding: 70px 10px 0;
-      }
+  .pulsate-cell .swiper-slide {
+    font-size: 16px;
+  }
+}
 
-      .top-flex-wrapper {
-        flex-direction: row;
-        justify-content: flex-start;
-        margin: 40px 0 30px;
-        gap: 12px;
-      }
+/* Mobile styles */
+@media (max-width: 768px) {
+  body {
+    background-position: top center;
+    padding: 10px 10px 0;
+  }
 
-      .top-flex-wrapper img {
-        height: 60px;
-        width: 18px;
-      }
+  .top-flex-wrapper {
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 20px 0 30px;
+    gap: 12px;
+  }
 
-      .text-column {
-        gap: 4px;
-      }
+  .top-flex-wrapper img {
+    height: 60px;
+    width: 18px;
+  }
 
-      .div2 span {
-        font-size: 24px;
-      }
+  .text-column {
+    gap: 4px;
+  }
 
-      .div3 span {
-        font-size: 14px;
-        line-height: 1.7;
-      }
+  .div2 span {
+    font-size: 24px;
+  }
 
-      .parent {
-        grid-template-columns: repeat(2, 1fr);
-        width: 100%;
-        max-width: 100%;
-        padding: 0 12px 24px;
-        row-gap: 12px;
-      }
+  .div3 span {
+    font-size: 14px;
+    line-height: 1.7;
+  }
 
-      /* فقط 10 خانه اول نمایش داده شوند */
-      .parent .carousel:nth-child(n+11) {
-        display: none !important;
-      }
+  .parent {
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    max-width: 100%;
+    padding: 0 4px 12px;
+    row-gap: 12px;
+  }
 
-      .carousel {
-        padding: 4px !important;
-      }
+  /* فقط 10 خانه اول نمایش داده شوند */
+  .parent .carousel:nth-child(n+11) {
+    display: none !important;
+  }
 
-      .swiper {
-        width: 100%;
-        height: 82px;
-      }
+  .carousel {
+    padding: 0 !important;
+    overflow: visible; /* قطع نشدن بوردِرها */
+  }
 
-      /* بهبود کیفیت SVG در موبایل */
-      .swiper-slide img {
-        width: auto;
-        height: auto;
-        max-width: 70%;
-        max-height: 70%;
-        object-fit: contain;
-        image-rendering: crisp-edges;
-        image-rendering: -webkit-optimize-contrast;
-        -ms-interpolation-mode: nearest-neighbor;
-        transform: translateZ(0);
-        backface-visibility: hidden;
-      }
+  /* اسلایدرهای کوچک در موبایل */
+  .swiper {
+    width: 220PX !important;
+    height: 70px !important;
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
 
-      .pulsate-cell .swiper-slide {
-        font-size: 14px;
-      }
+  /* بهبود کیفیت SVG در موبایل + فیت شدن در 72px */
+  .swiper-slide img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    image-rendering: crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
 
-      /* بلر کمتر در موبایل */
-      .swiper-fade .swiper-slide {
-        filter: blur(8px) !important;
-        opacity: 0;
-        transition-duration: 600ms;
-      }
+  .pulsate-cell .swiper-slide {
+    font-size: 14px;
+  }
 
-      .swiper-fade .swiper-slide-active {
-        filter: blur(0) !important;
-        opacity: 1 !important;
-      }
-        html, body {
+  html, body {
     overflow-x: hidden !important;
   }
-    }
+}
 
 /* آیکون دایره‌ای کنار پیام دسترسی دوربین */
 .msg-icon-circle {
-width: 80px;
-    height: 80px;
-    min-width: 42px;
-    border-radius: 50%;
-    background: linear-gradient(82.94deg, rgb(8, 34, 35) 3.66%, rgb(29, 70, 65) 96.34%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-inline-start: 8px;
-    font-size: 22px;
-    border: 2px solid #ba9258;
-
+  width: 80px;
+  height: 80px;
+  min-width: 42px;
+  border-radius: 50%;
+  background: linear-gradient(82.94deg, rgb(8, 34, 35) 3.66%, rgb(29, 70, 65) 96.34%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: 8px;
+  font-size: 22px;
+  border: 2px solid #ba9258;
 }
+
 /* وقتی دوربین فعال شد، انیمیشن سلول وسط قطع شود */
 .pulsate-cell.camera-on {
   animation: none !important;
 }
+
+/* نسخه نهایی سایز آیکون */
 .msg-icon-circle {
   width: 48px;
   height: 48px;
   min-width: 48px;
   border-radius: 50%;
-  background:#173c38;  display: flex;
+  background: #173c38;
+  display: flex;
   align-items: center;
   justify-content: center;
   margin-inline-start: 8px;
   border: 2px solid #ba9258;
-
 }
 
 .msg-icon-img {
@@ -392,25 +385,25 @@ width: 80px;
   object-fit: contain;
   display: block;
 }
+
 @media (max-width: 768px) {
   .msg-icon-circle {
     display: none !important;
-    
   }
+
   .parent .carousel.pulsate-cell {
     grid-row: 2;
     grid-column: 2;
   }
-  
-  #customMessageBox > button {
-  padding: 0 20px;
-  height: 45px;
-  font-size: 14px;
-  white-space: nowrap;   /* جلوگیری از 2 خطی شدن */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-    width: 80px !important;
-}
 
+  #customMessageBox > button {
+    padding: 0 20px;
+    height: 45px;
+    font-size: 14px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px !important;
+  }
 }
