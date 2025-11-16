@@ -93,7 +93,7 @@
     });
 
     //  تاخیر رندوم بین تغییرها
-    const randomDelay = () => 1800 + Math.random() * 4200;
+    const randomDelay = () => 1400 + Math.random() * 3500;
 
     const getNewUniqueLogoForSwiper = (swiperIndex) => {
       const used = new Set(
@@ -138,7 +138,7 @@
       const newLogoIdx = getNewUniqueLogoForSwiper(swiperIndex);
 
       currentLogoIndex[swiperIndex] = newLogoIdx;
-      swiper.slideToLoop(newLogoIdx, 850); // فید ۹۰۰ms
+      swiper.slideToLoop(newLogoIdx, 800); // فید ۹۰۰ms
 
       setTimeout(tick, randomDelay());
     };
