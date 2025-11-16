@@ -93,7 +93,7 @@
     });
 
     //  تاخیر رندوم بین تغییرها
-    const randomDelay = () => 1400 + Math.random() * 3500;
+    const randomDelay = () => 900 + Math.random() * 3100;
 
     const getNewUniqueLogoForSwiper = (swiperIndex) => {
       const used = new Set(
