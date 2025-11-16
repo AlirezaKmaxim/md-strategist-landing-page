@@ -116,8 +116,8 @@
     → یعنی هنوز دو فاز داریم، اما بدون پله‌پله‌ی تیز
   */
   transition:
-    filter 0.41s ease-out,
-    opacity 0.2s ease-in 0.6s;
+    filter 0.4s ease-out,
+    opacity 0.25s ease-in 0.51s;
 }
 
 /* اسلاید فعال (در حال آمدن) */
